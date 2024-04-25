@@ -6,6 +6,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@datadog/browser-rum": "^5.16.0",
     "date-fns": "^3.6.0",
     "gray-matter": "^4.0.3",
     "next": "latest",
