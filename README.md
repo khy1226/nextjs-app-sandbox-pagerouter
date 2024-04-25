@@ -1,4 +1,4 @@
-This is a starter template for [Learn Next.js](https://nextjs.org/learn).
+This is a starter template for [Learn Next.js](https://nextjs.org/learn) and based on [this](https://nextjs.org/learn-pages-router/basics/create-nextjs-app) tutorial!
 ### Commands
 - To create the next application template
 ```shell
