@@ -1,2 +1,1 @@
-# nextjs-app-sandbox
- A sample Next.js sample application with DD RUM instrumented on it
+This is a starter template for [Learn Next.js](https://nextjs.org/learn).
