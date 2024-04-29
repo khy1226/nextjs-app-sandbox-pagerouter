@@ -6,6 +6,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@datadog/browser-logs": "^5.16.0",
     "@datadog/browser-rum": "^5.16.0",
     "date-fns": "^3.6.0",
     "dd-trace": "5.9.0",

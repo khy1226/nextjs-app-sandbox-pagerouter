@@ -4,6 +4,8 @@ import utilStyles from '../styles/utils.module.css';
 import { getSortedPostsData } from '../lib/posts';
 import Link from 'next/link';
 import Date from '../components/date';
+import { useState } from 'react';
+
 
 export async function getStaticProps() {
   const allPostsData = getSortedPostsData();
@@ -14,7 +16,13 @@ export async function getStaticProps() {
   };
 }
 
+
 export default function Home({ allPostsData }) {
+  const [user, setUser] = useState({
+    name: "",
+    username: ""
+  });
+
   return (
     <Layout home>
       <Head>
@@ -42,6 +50,62 @@ export default function Home({ allPostsData }) {
           ))}
         </ul>
       </section>
+      
+      <p>CREATE USERS!</p>
+
+      <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
+        <div id="myForm">
+            <label>Username:</label>
+            <input type="text" id="username" name="username" value={user.username} onChange={(value) => {setUser((_prev) => {
+              let newUser = { ..._prev }
+              newUser.username = value.target.value
+              return newUser
+            })}} /><br></br>
+            <label>Name:</label>
+            <input type="text" id="name" name="name" value={user.name} onChange={(value) => {
+              setUser((_prev) => {
+                let newUser = { ..._prev }
+                newUser.name = value.target.value
+                return newUser
+              })
+            }} /><br></br>
+            <button type="button" id="submitButton" onClick={() => {
+              fetch(`${window.location.origin}/api/proxy/users`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(user)
+              })
+              .then(response => response.json())
+              .then(responseData => {
+                  // Handle the response from the server here
+                  if (window?.DD_LOGS?.logger){
+                      if (responseData.success) {
+                          window.DD_LOGS.logger.info(responseData);
+                      } else {
+                          try {
+                              throw new Error(JSON.stringify(responseData))
+                          } catch (error) {
+                              window.DD_LOGS.logger.error('Error occurred', {}, error);
+                              if (window?.DD_RUM) {
+                                  window.DD_RUM.addError(error)
+                              }
+                          }
+                      }
+                  }
+              })
+              .catch(error => {
+                  if (window?.DD_LOGS?.logger)
+                      window.DD_LOGS.logger.error('Error occurred', {}, error);
+                  if (window?.DD_RUM) {
+                      window.DD_RUM.addError(error)
+                  }
+              });
+            }}>Submit</button>
+        </div>
+      </section>
+
     </Layout>
   );
 }
