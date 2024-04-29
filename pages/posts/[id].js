@@ -4,6 +4,7 @@ import Date from '../../components/date';
 import Head from 'next/head';
 import utilStyles from '../../styles/utils.module.css';
 
+
 export default function Post({ postData }) {
     return (
       <Layout>
