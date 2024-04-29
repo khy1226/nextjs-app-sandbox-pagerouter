@@ -135,7 +135,7 @@ def dd_proxy():
         req_header["X-FORWARDED-FOR"] = request.headers["X-Req-Client-Ip"]
     resp = requests.request(
         method=request.method,
-        url=f'https://browser-intake-datadoghq.com/{request.args["ddforward"]}',
+        url=f'https://browser-intake-datadoghq.com{request.args["ddforward"]}',
         headers=req_header,
         params=request.args,
         data=request.get_data(),
