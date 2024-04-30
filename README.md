@@ -45,3 +45,7 @@ Error tracking lab
 - on a browser, enabled the error tracking
 - use datadog logger
 - generate Sourcemap and upload them
+	datadog-ci sourcemaps upload .next/static  \
+		--service=next.js-sample-application \
+		--release-version=1.0.0 \
+		--minified-path-prefix=/static
