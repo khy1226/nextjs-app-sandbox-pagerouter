@@ -4,6 +4,16 @@ import { datadogRum } from '@datadog/browser-rum';
 import { datadogLogs } from '@datadog/browser-logs'
 
 
+function makeid(length) {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for(var i=0; i < length; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
+}
+
+
 datadogRum.init({
     applicationId: '7c95d9bc-fe5c-4371-9621-986c80cf8072',
     clientToken: 'pub4938bf907e0c4d25d15fc6457024b290',
@@ -24,7 +34,14 @@ datadogRum.init({
     proxy: "/api/proxy/ddProxy",
     allowedTracingUrls: [() => {
       return true
-    }]
+    }],
+    beforeSend: (event, context) => {
+      // collect a RUM resource's response headers
+      if (event.type === 'resource' && event.resource.type === 'fetch') {
+          event.context.responseHeaders = Object.fromEntries(context.response.headers)
+      }
+      return true
+    }
 });
 
 
@@ -48,6 +65,18 @@ export default function App({ Component, pageProps }) {
       })
       // loading navigation -- SSR page
       datadogRum.startView(window.location.pathname)
+      const userObj = localStorage.getItem("phyverseUserObj") ?
+          JSON.parse(localStorage.getItem("phyverseUserObj")) :
+          {
+              id: makeid(10),
+              name: makeid(10),
+              email: `${makeid(5)}@${makeid(5)}.com`
+          }
+      datadogRum.setUser(userObj)
+      datadogRum.setGlobalContext({
+          loadingId: makeid(10),
+      });
+      localStorage.setItem("phyverseUserObj", JSON.stringify(userObj));
     }
   },[])
   

@@ -3,38 +3,45 @@ Let's start by installing all the libraries!
 
 
 ### Commands
-- To create the next application template
-```shell
-npx create-next-app@latest nextjs-blog --use-npm --example "https://github.com/vercel/next-learn/tree/main/basics/learn-starter"
+```
+	./install.sh
+```
+- Now open the terminal
+```
+	./start_nextjs.sh
+```
+- If you have problem with the node version, instal nvm
+```
+	brew install nvm
+	source ./export_nvm.sh
+	nvm use 18.17.0
+```
+- Now open another terminal
+```
+	./start_python.sh
 ```
 
-- You should also update the following files:
-	- `public/images/profile.jpg` with your photo (Recommended: 400px width/height).
-	- `const name = '[Your Name]'` in `components/layout.js` with your name.
-	- `<p>[Your Self Introduction]</p>` in `pages/index.js` with your self introduction.
+Now you have the solution up and running!
 
-- Will need to check the `dependencies` in the `package.json` and also `package-lock.json` file
-```json
-{
-	"private": true,
-	"scripts": {
-		"build": "next build",
-		"dev": "next dev",
-		"start": "next start"
-	},
+# Exercise 1
+To begin with, create a nextjs application, add datadog RUM and datadog APM to it.
+You can follow the following doc:
+- https://nextjs.org/docs/pages/api-reference/create-next-app
+- https://docs.datadoghq.com/real_user_monitoring/guide/monitor-your-nextjs-app-with-rum/?tab=npm
+- https://docs.datadoghq.com/tracing/trace_collection/automatic_instrumentation/dd_libraries/nodejs/
 
-	"dependencies": {
-		"date-fns": "^3.6.0",
-		"gray-matter": "^4.0.3",
-		"next": "latest",
-		"react": "18.2.0",
-		"react-dom": "18.2.0",
-		"remark": "^15.0.1",
-		"remark-html": "^16.0.1"
-	},
-	
-	"engines": {
-		"node": ">=18"
-	}
-}```
+Note: ensure to run the nextjs app as https by adding --experimental-https in the package.json
 
+# Exercise 2
+On the newly created app, please try to:
+- set context to identify each refresh
+- set user data to recognise anonimous users
+- create a proxy to a python app you can find in app.py. Run ./start_python.sh
+- use beforeSend to track headers
+- add APM header to all xhr / fetch requests
+
+# Exercise 3
+Error tracking lab
+- on a browser, enabled the error tracking
+- use datadog logger
+- generate Sourcemap and upload them
