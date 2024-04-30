@@ -70,6 +70,7 @@ export default function Home({ allPostsData }) {
               })
             }} /><br></br>
             <button type="button" id="submitButton" onClick={() => {
+              console.log(JSON.stringify(user))
               fetch(`${window.location.origin}/api/proxy/users`, {
                 method: "POST",
                 headers: {

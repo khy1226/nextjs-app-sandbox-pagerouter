@@ -1,9 +1,27 @@
 import requestIp from 'request-ip';
 
 
+// EXPORT config to tell Next.js NOT to parse the body
+export const config = {
+    api: {
+        bodyParser: false
+    }
+};
+
+// Get raw body as string
+async function getRawBody(readable) {
+    const chunks = [];
+    for await (const chunk of readable) {
+        chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
+    }
+    return Buffer.concat(chunks);
+}
+
+
 export default async function handler(req, res) {
     try {
-        const { method, body, headers } = req;
+        const { method, headers } = req;
+        const body = await getRawBody(req)
         const { proxy } = req.query
         delete req.query.proxy
         // Define the URL you want to proxy to

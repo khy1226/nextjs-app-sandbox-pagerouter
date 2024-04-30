@@ -3,4 +3,5 @@ export DD_ENV="prod"
 export DD_LOGS_INJECTION=true
 export DD_PROFILING_ENABLED=true
 export NODE_OPTIONS='--require dd-trace/init'
-npm start
+# npm start TO USE IN PRODUCTION
+npm run dev 

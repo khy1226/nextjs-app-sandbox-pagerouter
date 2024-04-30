@@ -68,7 +68,7 @@ RepeatedTimer(60*15, lambda: logging.info("KEEP ALIVE"))
 
 
 @app.get('/reset')
-def reset_server(user_id=None):
+def reset_server():
     global users
     global username_set
     users = dict()
@@ -78,6 +78,7 @@ def reset_server(user_id=None):
 
 @app.post('/users')
 def create_users():
+    logging.info(request.get_data())
     new_user = dict()
     new_user["name"] = request.get_json().get("name", "UNK")
     new_user["username"] = request.get_json().get("username", str(uuid.uuid4()))
