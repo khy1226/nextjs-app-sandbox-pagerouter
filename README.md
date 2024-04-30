@@ -1,4 +1,7 @@
-This is a starter template for [Learn Next.js](https://nextjs.org/learn) and based on [this](https://nextjs.org/learn-pages-router/basics/create-nextjs-app) tutorial!
+Welcome to the training week!
+Let's start by installing all the libraries!
+
+
 ### Commands
 - To create the next application template
 ```shell

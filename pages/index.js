@@ -71,7 +71,9 @@ export default function Home({ allPostsData }) {
             }} /><br></br>
             <button type="button" id="submitButton" onClick={() => {
               console.log(JSON.stringify(user))
-              fetch(`${window.location.origin}/api/proxy/users`, {
+              const url = `${window.location.origin}/api/proxy/users`
+              // const url = `${window.location.origin}/appApi/users`
+              fetch(url, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
