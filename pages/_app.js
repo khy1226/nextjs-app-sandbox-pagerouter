@@ -49,9 +49,11 @@ datadogLogs.init({
   clientToken: 'pub4938bf907e0c4d25d15fc6457024b290',
   site: 'datadoghq.com',
   forwardErrorsToLogs: true,
+  forwardConsoleLogs: "all",
   sessionSampleRate: 100,
   proxy: "/api/proxy/ddProxy"
 })
+datadogLogs.logger.setLevel("info")
 
 
 export default function App({ Component, pageProps }) {

@@ -70,7 +70,6 @@ export default function Home({ allPostsData }) {
               })
             }} /><br></br>
             <button type="button" id="submitButton" onClick={() => {
-              console.log(JSON.stringify(user))
               const url = `${window.location.origin}/api/proxy/users`
               // const url = `${window.location.origin}/appApi/users`
               fetch(url, {
@@ -85,7 +84,7 @@ export default function Home({ allPostsData }) {
                   // Handle the response from the server here
                   if (window?.DD_LOGS?.logger){
                       if (responseData.success) {
-                          window.DD_LOGS.logger.info(responseData);
+                        window.DD_LOGS.logger.info("User creation resposnse", {responseData});
                       } else {
                           try {
                               throw new Error(JSON.stringify(responseData))
