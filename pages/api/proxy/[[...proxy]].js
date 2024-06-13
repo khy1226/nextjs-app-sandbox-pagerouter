@@ -32,6 +32,10 @@ export default async function handler(req, res) {
         delete newHeader['host']
         delete newHeader['content-length']
         delete newHeader['x-forwarded-for']
+        delete newHeader['x-datadog-trace-id']
+        delete newHeader['x-datadog-parent-id']
+        delete newHeader['x-datadog-origin']
+        delete newHeader['x-datadog-sampling-priority']
         newHeader['x-req-client-ip'] = requestIp.getClientIp(req)
         if (newHeader['x-req-client-ip'] === "::1") {
             delete newHeader['x-req-client-ip']
