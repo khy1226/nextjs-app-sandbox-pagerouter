@@ -3,7 +3,7 @@ import Layout, { siteTitle } from '../components/layout';
 import utilStyles from '../styles/utils.module.css';
 import { getSortedPostsData } from '../lib/posts';
 import Link from 'next/link';
-import Date from '../components/date';
+import Datetime from '../components/date';
 import { useState } from 'react';
 
 
@@ -22,6 +22,7 @@ export default function Home({ allPostsData }) {
     name: "",
     username: ""
   });
+  const [counter, setCounter] = useState(0)
 
   return (
     <Layout home>
@@ -44,7 +45,7 @@ export default function Home({ allPostsData }) {
               <Link href={`/posts/${id}`}>{title}</Link>
               <br />
               <small className={utilStyles.lightText}>
-                <Date dateString={date} />
+                <Datetime dateString={date} />
               </small>
             </li>
           ))}
@@ -72,6 +73,7 @@ export default function Home({ allPostsData }) {
             <button type="button" id="submitButton" onClick={() => {
               const url = `${window.location.origin}/api/proxy/users`
               // const url = `${window.location.origin}/appApi/users`
+              window.DD_RUM.addTiming(`creare_user_${counter}`);
               fetch(url, {
                 method: "POST",
                 headers: {
@@ -81,7 +83,9 @@ export default function Home({ allPostsData }) {
               })
               .then(response => response.json())
               .then(responseData => {
+                  window.DD_RUM.addTiming(`creare_user_${counter}_done`);
                   // Handle the response from the server here
+                  setCounter((prev) => prev+1)
                   if (window?.DD_LOGS?.logger){
                       if (responseData.success) {
                         window.DD_LOGS.logger.info("User creation resposnse", {responseData});
@@ -98,7 +102,9 @@ export default function Home({ allPostsData }) {
                   }
               })
               .catch(error => {
-                  if (window?.DD_LOGS?.logger)
+                setCounter((prev) => prev+1)
+                window.DD_RUM.addTiming(`creare_user_${counter}_done`);
+                if (window?.DD_LOGS?.logger)
                       window.DD_LOGS.logger.error('Error occurred', {}, error);
                   if (window?.DD_RUM) {
                       window.DD_RUM.addError(error)
