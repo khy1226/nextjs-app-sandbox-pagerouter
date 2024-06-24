@@ -8,6 +8,7 @@
   "dependencies": {
     "@datadog/browser-logs": "^5.16.0",
     "@datadog/browser-rum": "^5.16.0",
+    "@hotwired/turbo": "^8.0.4",
     "date-fns": "^3.6.0",
     "dd-trace": "5.9.0",
     "eslint-config-next": "^14.2.3",

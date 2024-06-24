@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import '../styles/global.css';
 import { datadogRum } from '@datadog/browser-rum';
-import { datadogLogs } from '@datadog/browser-logs'
+import { datadogLogs } from '@datadog/browser-logs';
+import router from "next/router";
 
 
 function makeid(length) {
@@ -61,14 +62,14 @@ export default function App({ Component, pageProps }) {
   useEffect(() => {
     if(window){
       // single page navigation -- on the client-side
-      window.navigation.addEventListener("navigate", (event) => {
+      /*window.navigation.addEventListener("navigate", (event) => {
         const urlParsed = new URL(event.destination.url)
         datadogRum.startView(urlParsed.pathname);
       })
       // loading navigation -- SSR page
-      datadogRum.startView(window.location.pathname)
-      const userObj = localStorage.getItem("phyverseUserObj") ?
-          JSON.parse(localStorage.getItem("phyverseUserObj")) :
+      datadogRum.startView(window.location.pathname)*/
+      const userObj = localStorage.getItem("userObj") ?
+          JSON.parse(localStorage.getItem("userObj")) :
           {
               id: makeid(10),
               name: makeid(10),
@@ -78,9 +79,24 @@ export default function App({ Component, pageProps }) {
       datadogRum.setGlobalContext({
           loadingId: makeid(10),
       });
-      localStorage.setItem("phyverseUserObj", JSON.stringify(userObj));
+      localStorage.setItem("userObj", JSON.stringify(userObj));
     }
   },[])
+
+  useEffect(() => {
+    // We listen to this event to determine whether to redirect or not
+    router.events.on("routeChangeStart", handleRouteChange);
+    datadogRum.startView(window.location.pathname)
+    return () => {
+      router.events.off("routeChangeStart", handleRouteChange);
+    };
+  }, []);
+
+  const handleRouteChange = (url) => {
+    console.log("App is changing to: ", url);
+    const urlParsed = new URL(`${window.location.origin}${url}`)
+    datadogRum.startView(urlParsed.pathname);
+  };
   
   return <Component {...pageProps} />;
 }

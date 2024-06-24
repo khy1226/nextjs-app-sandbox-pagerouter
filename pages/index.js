@@ -3,8 +3,8 @@ import Layout, { siteTitle } from '../components/layout';
 import utilStyles from '../styles/utils.module.css';
 import { getSortedPostsData } from '../lib/posts';
 import Link from 'next/link';
-import Date from '../components/date';
-import { useState } from 'react';
+import Datetime from '../components/date';
+import { useEffect, useState } from 'react';
 
 
 export async function getStaticProps() {
@@ -18,10 +18,30 @@ export async function getStaticProps() {
 
 
 export default function Home({ allPostsData }) {
+  const [wrappedFetch, setFetch] = useState()
   const [user, setUser] = useState({
     name: "",
     username: ""
   });
+  const [counter, setCounter] = useState(0)
+
+  useEffect(() => {
+    // This import is happening async, hence the DD RUM is being init before! ;)
+    import("@hotwired/turbo").then((turbo) => {
+      setFetch(() => {
+        /*
+        UNCOMMENT TO USE THE TURBO FETCH!
+        if (turbo?.fetch) {
+          return (url, option) => { return turbo.fetch(url, option) }
+        }
+        */
+        return (url, option) => { return window.fetch(url, option) }
+      })
+    }).catch((error) => {
+      console.error(error)
+      return (url, option) => { return window.fetch(url, option) }
+    });
+  }, [])
 
   return (
     <Layout home>
@@ -44,7 +64,7 @@ export default function Home({ allPostsData }) {
               <Link href={`/posts/${id}`}>{title}</Link>
               <br />
               <small className={utilStyles.lightText}>
-                <Date dateString={date} />
+                <Datetime dateString={date} />
               </small>
             </li>
           ))}
@@ -72,7 +92,8 @@ export default function Home({ allPostsData }) {
             <button type="button" id="submitButton" onClick={() => {
               const url = `${window.location.origin}/api/proxy/users`
               // const url = `${window.location.origin}/appApi/users`
-              fetch(url, {
+              window.DD_RUM.addTiming(`creare_user_${counter}`);
+              wrappedFetch(url, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -81,7 +102,9 @@ export default function Home({ allPostsData }) {
               })
               .then(response => response.json())
               .then(responseData => {
+                  window.DD_RUM.addTiming(`creare_user_${counter}_done`);
                   // Handle the response from the server here
+                  setCounter((prev) => prev+1)
                   if (window?.DD_LOGS?.logger){
                       if (responseData.success) {
                         window.DD_LOGS.logger.info("User creation resposnse", {responseData});
@@ -98,7 +121,9 @@ export default function Home({ allPostsData }) {
                   }
               })
               .catch(error => {
-                  if (window?.DD_LOGS?.logger)
+                setCounter((prev) => prev+1)
+                window.DD_RUM.addTiming(`creare_user_${counter}_done`);
+                if (window?.DD_LOGS?.logger)
                       window.DD_LOGS.logger.error('Error occurred', {}, error);
                   if (window?.DD_RUM) {
                       window.DD_RUM.addError(error)
