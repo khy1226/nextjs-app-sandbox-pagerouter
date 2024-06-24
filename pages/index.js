@@ -4,7 +4,7 @@ import utilStyles from '../styles/utils.module.css';
 import { getSortedPostsData } from '../lib/posts';
 import Link from 'next/link';
 import Datetime from '../components/date';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 
 export async function getStaticProps() {
@@ -18,11 +18,30 @@ export async function getStaticProps() {
 
 
 export default function Home({ allPostsData }) {
+  const [wrappedFetch, setFetch] = useState()
   const [user, setUser] = useState({
     name: "",
     username: ""
   });
   const [counter, setCounter] = useState(0)
+
+  useEffect(() => {
+    // This import is happening async, hence the DD RUM is being init before! ;)
+    import("@hotwired/turbo").then((turbo) => {
+      setFetch(() => {
+        /*
+        UNCOMMENT TO USE THE TURBO FETCH!
+        if (turbo?.fetch) {
+          return (url, option) => { return turbo.fetch(url, option) }
+        }
+        */
+        return (url, option) => { return window.fetch(url, option) }
+      })
+    }).catch((error) => {
+      console.error(error)
+      return (url, option) => { return window.fetch(url, option) }
+    });
+  }, [])
 
   return (
     <Layout home>
@@ -74,7 +93,7 @@ export default function Home({ allPostsData }) {
               const url = `${window.location.origin}/api/proxy/users`
               // const url = `${window.location.origin}/appApi/users`
               window.DD_RUM.addTiming(`creare_user_${counter}`);
-              fetch(url, {
+              wrappedFetch(url, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
