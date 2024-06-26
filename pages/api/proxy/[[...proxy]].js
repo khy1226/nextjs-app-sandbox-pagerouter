@@ -21,6 +21,7 @@ async function getRawBody(readable) {
 export default async function handler(req, res) {
     try {
         const { method, headers } = req;
+        console.info(headers); 
         const body = await getRawBody(req)
         const { proxy } = req.query
         delete req.query.proxy
