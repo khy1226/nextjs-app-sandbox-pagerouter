@@ -48,7 +48,7 @@ export default function Home({ allPostsData }) {
       const url = `http://127.0.0.1:8080/users`
       wrappedFetch(url, {
         method: "GET",
-        mode: "cors",
+        // mode: "cors",
         headers: {
             "Content-Type": "application/json"
         }

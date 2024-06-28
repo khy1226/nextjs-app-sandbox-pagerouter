@@ -113,7 +113,7 @@ def crossdomain(origin=None, methods=None, headers=None,
                 h['Access-Control-Allow-Headers'] = headers
             if request.headers.get("Access-Control-Request-Headers") is not None:
                 h['Access-Control-Allow-Headers'] = request.headers["Access-Control-Request-Headers"]
-            logging.info(h)
+            logging.debug(h)
             return resp
         if os.environ.get("ALLOW_CORS", "false") == "false":
             return f
@@ -128,7 +128,6 @@ def handle_preflight():
     if os.environ.get("ALLOW_CORS", "false") == "false":
         return
     if request.method == "OPTIONS":
-        logging.info(request.headers)
         res = Response()
         res.headers['X-Content-Type-Options'] = '*'
         res.headers['Allow'] = 'OPTIONS, POST, GET, HEAD'
@@ -147,7 +146,7 @@ def reset_server():
 @app.post('/users')
 @crossdomain(origin="*")
 def create_users():
-    logging.info(request.get_data())
+    logging.debug(request.get_data())
     new_user = dict()
     new_user["name"] = request.get_json().get("name", "UNK")
     new_user["username"] = request.get_json().get("username", str(uuid.uuid4()))
