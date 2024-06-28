@@ -42,6 +42,20 @@ export default function Home({ allPostsData }) {
     });
   }, [])
 
+  useEffect(() => {
+    if (wrappedFetch){
+      // const url = `${window.location.origin}/api/proxy/users`
+      const url = `http://127.0.0.1:8080/users`
+      wrappedFetch(url, {
+        method: "GET",
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json"
+        }
+      })
+    }
+  }, [wrappedFetch])
+
   return (
     <Layout home>
       <Head>

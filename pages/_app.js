@@ -3,6 +3,7 @@ import '../styles/global.css';
 import { datadogRum } from '@datadog/browser-rum';
 import { datadogLogs } from '@datadog/browser-logs';
 import router from "next/router";
+import CookieConsent from "react-cookie-consent";
 
 
 function makeid(length) {
@@ -33,12 +34,13 @@ datadogRum.init({
     defaultPrivacyLevel: 'mask-user-input',
     trackViewsManually: true,
     proxy: "/api/proxy/ddProxy",
+    trackingConsent: "not-granted",
     allowedTracingUrls: [() => {
       return true
     }],
     beforeSend: (event, context) => {
       // collect a RUM resource's response headers
-      if (event.type === 'resource' && event.resource.type === 'fetch') {
+      if (event.type === 'resource' && event.resource.type === 'fetch' && context?.response?.headers) {
           event.context.responseHeaders = Object.fromEntries(context.response.headers)
       }
       return true
@@ -58,6 +60,11 @@ datadogLogs.logger.setLevel("info")
 
 
 export default function App({ Component, pageProps }) {
+  function getGrantCookie() {
+    // grant-cookie
+    return window.document.cookie.includes("grant-cookie=true")
+  }
+  
   // this function is to handle client-side actions
   useEffect(() => {
     if(window){
@@ -86,6 +93,7 @@ export default function App({ Component, pageProps }) {
   useEffect(() => {
     // We listen to this event to determine whether to redirect or not
     router.events.on("routeChangeStart", handleRouteChange);
+    datadogRum.setTrackingConsent(getGrantCookie() ? "granted" : "not-granted")
     datadogRum.startView(window.location.pathname)
     return () => {
       router.events.off("routeChangeStart", handleRouteChange);
@@ -98,5 +106,24 @@ export default function App({ Component, pageProps }) {
     datadogRum.startView(urlParsed.pathname);
   };
   
-  return <Component {...pageProps} />;
+  return <>
+    <CookieConsent
+      enableDeclineButton
+      location="bottom"
+      buttonText="GRANT ME!"
+      cookieName="grant-cookie"
+      style={{ background: "#2B373B" }}
+      buttonStyle={{ color: "#4e503b", fontSize: "13px" }}
+      expires={150}
+      onDecline={() => {
+        datadogRum.setTrackingConsent("not-granted")
+      }}
+      onAccept={() => {
+        datadogRum.setTrackingConsent("granted")
+      }}
+    >
+      This website uses cookies to enhance the user experience.
+    </CookieConsent>
+    <Component {...pageProps} />
+  </>;
 }
