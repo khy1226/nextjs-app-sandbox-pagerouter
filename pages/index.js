@@ -28,12 +28,12 @@ export default function Home({ allPostsData }) {
   useEffect(() => {
     // This import is happening async, hence the DD RUM is being init before! ;)
     import("@hotwired/turbo").then((turbo) => {
-      setFetch(() => {
-      
-        //UNCOMMENT TO USE THE TURBO FETCH!
-        /*if (turbo?.fetch) {
+      setFetch(() => {        
+        // COMMENT NOT TO USE THE TURBO FETCH!
+        if (turbo?.fetch) {
           return (url, option) => { return turbo.fetch(url, option) }
-        }*/       
+        }
+
         return (url, option) => { return window.fetch(url, option) }
       })
     }).catch((error) => {
