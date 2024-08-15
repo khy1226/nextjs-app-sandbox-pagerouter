@@ -17,12 +17,12 @@ function makeid(length) {
 
 
 datadogRum.init({
-  applicationId: '08fda4c7-4cb4-4623-9b43-064e910f70f5',
-  clientToken: 'pubc6967c6721aa8fe22ff695fba1d5486a',
+  applicationId: '',
+  clientToken: '',
     // `site` refers to the Datadog site parameter of your organization
     // see https://docs.datadoghq.com/getting_started/site/
     site: 'datadoghq.com',
-    service: 'corn-nextjs-june-take',
+    service: 'NextJS-SampleApp',
     env: 'PRD',
     // Specify a version number to identify the deployed version of your application in Datadog
     version: '1.0.0', 
@@ -34,7 +34,7 @@ datadogRum.init({
     defaultPrivacyLevel: 'mask-user-input',
     trackViewsManually: true,
     proxy: "/api/proxy/ddProxy",
-    trackingConsent: "not-granted",
+    trackingConsent: "granted",
     allowedTracingUrls: [() => {
       return true
     }],
@@ -49,7 +49,7 @@ datadogRum.init({
 
 
 datadogLogs.init({
-  clientToken: 'pubc6967c6721aa8fe22ff695fba1d5486a',
+  clientToken: '',
   site: 'datadoghq.com',
   forwardErrorsToLogs: true,
   forwardConsoleLogs: "all",
