@@ -1,3 +1,7 @@
 node_modules
 .next
 certificates
+Pipfile.lock
+package-lock.json
+.venv
+.pipenv-venv
